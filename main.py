@@ -1,0 +1,43 @@
+#para crear el requirements.txt
+#python -m pipreqs.pipreqs --force --encoding utf-8 .
+
+import View
+
+class Project_MBDS:
+
+    name_project ="";
+
+    def __init__(self,name_project):
+
+        self.name_project  = name_project;
+
+
+    def start_view(self):
+
+        view_streamlit = View.Streamlit()
+
+        view_streamlit.get_title(self.name_project)
+
+        view_streamlit.get_sidebar()
+
+        view_streamlit.get_price_chart()
+
+        view_streamlit.get_moving_average_chart()
+
+        view_streamlit.get_rsi_chart()
+
+        view_streamlit.get_moving_average_and_price_chart()
+
+        view_streamlit.get_dataframe()
+
+        print('Project run successfully')
+
+
+
+#https://docs.kraken.com/rest/#tag/Market-Data/operation/getTradableAssetPairs
+
+
+# Initialises the WhatsApp Bot
+project = Project_MBDS("Python para el análisis de datos")
+project.start_view()
+
