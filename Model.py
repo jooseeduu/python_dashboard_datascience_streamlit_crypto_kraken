@@ -6,6 +6,8 @@ class ModelAssets:
 
     dataframe_selected_tradable_asset_pair = None
 
+    period_moving_average = None
+
     def __init__(self):
 
         None
@@ -31,6 +33,11 @@ class ModelAssets:
 
         return self.dataframe_selected_tradable_asset_pair
 
+    def get_period_moving_average(self):
+
+        return self.period_moving_average
+
+
 
     def set_dataframe_selected_tradable_asset_pair(self, minutes ):
 
@@ -50,7 +57,7 @@ class ModelAssets:
         cols = ['open', 'high', 'low', 'close', 'vwap', 'volume', 'count']
         dataframe_result[cols] = dataframe_result[cols].apply(pd.to_numeric, errors='coerce', axis=1)
 
-        self.add_to_dataframe_moving_average(dataframe_result)
+        self.add_to_dataframe_moving_average(dataframe_result, self.period_moving_average)
 
         self.add_to_dataframe_sri(dataframe_result)
 
@@ -62,12 +69,18 @@ class ModelAssets:
 
     def get_selected_tradable_asset_pair(self):
 
-        return self.dataframe_result
+        return self.selected_tradable_asset_pair
 
 
     def set_selected_tradable_asset_pair(self,selected_tradable_asset_pair):
 
         self.selected_tradable_asset_pair = selected_tradable_asset_pair
+
+        return None
+
+    def set_period_moving_average(self,period_moving_average):
+
+        self.period_moving_average = period_moving_average
 
         return None
 

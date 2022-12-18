@@ -21,6 +21,20 @@ class ControllerAssets:
 
         self.model_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
 
+    def set_period_moving_average(self, period_moving_average):
+
+        self.model_assets.set_period_moving_average(period_moving_average)
+
+    def get_period_moving_average(self):
+
+       return self.model_assets.get_period_moving_average()
+
+
+
+    def get_selected_tradable_asset_pair(self):
+
+        return self.model_assets.get_selected_tradable_asset_pair()
+
 
     def set_dataframe_selected_tradable_asset_pair(self , selected_period_time ):
 
@@ -65,7 +79,7 @@ class ControllerAssets:
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'close'])
 
-        chart_data = chart_data.set_index('time')
+        #chart_data = chart_data.set_index('time') #para el altair
 
         return chart_data
 
@@ -75,7 +89,7 @@ class ControllerAssets:
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'moving_average'])
 
-        chart_data = chart_data.set_index('time')
+        #chart_data = chart_data.set_index('time')
 
         return chart_data
 
@@ -85,7 +99,7 @@ class ControllerAssets:
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'rsi'])
 
-        chart_data = chart_data.set_index('time')
+        #chart_data = chart_data.set_index('time')
 
         return chart_data
 

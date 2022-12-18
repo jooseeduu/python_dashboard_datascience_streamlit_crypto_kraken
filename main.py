@@ -38,6 +38,6 @@ class Project_MBDS:
 
 
 # Initialises the WhatsApp Bot
-project = Project_MBDS("Python para el análisis de datos")
+project = Project_MBDS("Proyecto de Python Para el Análisis de Datos")
 project.start_view()
 
