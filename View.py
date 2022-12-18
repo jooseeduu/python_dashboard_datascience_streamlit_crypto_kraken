@@ -10,11 +10,11 @@ from datetime import datetime
 
 class Streamlit:
 
-    controller_assets = None
+    __controller_assets = None
 
     def __init__(self):
 
-        self.controller_assets = ControllerAssets()
+        self.__controller_assets = ControllerAssets()
 
         st.set_page_config(
             page_title="Master Big Data Science",
@@ -28,10 +28,24 @@ class Streamlit:
 
         st.markdown("<h1 style='text-align: center; color: grey;'>"+title+"</h1>", unsafe_allow_html=True)
 
+    def show_status(self):
+
+        status = self.__controller_assets.get_status_kraken()
+
+        if(status != 'online'):
+            st.error('El servicio de Kraken no está disponible', icon="⛔")
+            print('El servicio de Kraken no está disponible')
+            exit(1)
+
+
+
+
+
+
 
     def get_sidebar(self):
 
-        list_tradable_asset_pairs = self.controller_assets.get_list_tradable_asset_pairs()
+        list_tradable_asset_pairs = self.__controller_assets.get_list_tradable_asset_pairs()
 
         default_value = list_tradable_asset_pairs.index('ETH/USDT')
 
@@ -45,24 +59,24 @@ class Streamlit:
 
         period_moving_average = st.sidebar.slider('Período para la Media Móvil', 1, 30, 3)
 
-        self.controller_assets.set_period_moving_average(period_moving_average)
+        self.__controller_assets.set_period_moving_average(period_moving_average)
 
-        self.controller_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
+        self.__controller_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
 
-        self.controller_assets.set_dataframe_selected_tradable_asset_pair(selected_period_time)
+        self.__controller_assets.set_dataframe_selected_tradable_asset_pair(selected_period_time)
 
         st.sidebar.write("Fuente de Datos: [kraken](https://www.kraken.com/)")
 
-        st.sidebar.write("Data actualizada al:" + datetime.now().strftime('%d %B, %Y %H:%M:%S'))
+        st.sidebar.write("Data actualizada al:" + datetime.now().strftime('%d %B, %Y %H:%M:%S')  + "(UTC)")
 
 
 
 
     def get_price_chart(self):
 
-        dataframe = self.controller_assets.get_dataframe_price_chart()
+        dataframe = self.__controller_assets.get_dataframe_price_chart()
         #st.area_chart(dataframe)
-        selected_tradable_asset_pair = self.controller_assets.get_selected_tradable_asset_pair()
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
         chart = alt.Chart(dataframe).mark_area(
             line={'color': 'darkgreen'},
@@ -97,9 +111,9 @@ class Streamlit:
 
     def get_moving_average_chart(self):
 
-        dataframe = self.controller_assets.get_dataframe_moving_average_chart()
+        dataframe = self.__controller_assets.get_dataframe_moving_average_chart()
 
-        selected_tradable_asset_pair = self.controller_assets.get_selected_tradable_asset_pair()
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
         #st.write("I'm ", period_moving_average, 'years old')
         #st.line_chart(dataframe)
@@ -130,8 +144,8 @@ class Streamlit:
 
     def get_rsi_chart(self):
 
-        dataframe = self.controller_assets.get_dataframe_rsi_chart()
-        selected_tradable_asset_pair = self.controller_assets.get_selected_tradable_asset_pair()
+        dataframe = self.__controller_assets.get_dataframe_rsi_chart()
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
 
         chart = alt.Chart(dataframe).mark_area(
@@ -165,8 +179,8 @@ class Streamlit:
 
     def get_moving_average_and_price_chart(self):
 
-        dataframe = self.controller_assets.get_dataframe_moving_average_and_price_chart()
-        selected_tradable_asset_pair = self.controller_assets.get_selected_tradable_asset_pair()
+        dataframe = self.__controller_assets.get_dataframe_moving_average_and_price_chart()
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
 
         #st.help(dataframe)
@@ -281,10 +295,10 @@ class Streamlit:
 
     def get_dataframe(self):
 
-        dataframe = self.controller_assets.get_dataframe_selected_tradable_asset_pair()
-        selected_tradable_asset_pair = self.controller_assets.get_selected_tradable_asset_pair()
+        dataframe = self.__controller_assets.get_dataframe_selected_tradable_asset_pair()
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
-        df_xlsx = self.controller_assets.to_excel(dataframe)
+        df_xlsx = self.__controller_assets.to_excel(dataframe)
         st.download_button(label='📥 DATAFRAME ('+ selected_tradable_asset_pair+')',
                            data=df_xlsx,
                            file_name='Dataframe ('+ selected_tradable_asset_pair+').xlsx' )

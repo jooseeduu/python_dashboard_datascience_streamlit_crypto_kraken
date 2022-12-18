@@ -1,16 +1,25 @@
 from APIKraken import *
-
+import pandas as pd
 class ModelAssets:
 
-    selected_tradable_asset_pair = None
+    __selected_tradable_asset_pair = None
 
-    dataframe_selected_tradable_asset_pair = None
+    __dataframe_selected_tradable_asset_pair = None
 
-    period_moving_average = None
+    __period_moving_average = None
 
     def __init__(self):
 
         None
+
+    def get_status_kraken(self):
+
+        api = APIKraken()
+
+        status = api.get_status()
+
+        return status
+
 
     def get_list_tradable_asset_pairs(self):
 
@@ -31,11 +40,11 @@ class ModelAssets:
 
     def get_dataframe_selected_tradable_asset_pair(self):
 
-        return self.dataframe_selected_tradable_asset_pair
+        return self.__dataframe_selected_tradable_asset_pair
 
     def get_period_moving_average(self):
 
-        return self.period_moving_average
+        return self.__period_moving_average
 
 
 
@@ -43,7 +52,7 @@ class ModelAssets:
 
         api = APIKraken()
 
-        api_dataframe_selected_tradable_asset_pair = api.get_OHLC( self.selected_tradable_asset_pair.replace("/", "" ) ,minutes )
+        api_dataframe_selected_tradable_asset_pair = api.get_OHLC( self.__selected_tradable_asset_pair.replace("/", "" ) ,minutes )
 
         api_result_dataframe_selected_tradable_asset_pair = list(api_dataframe_selected_tradable_asset_pair['result'].values())[0]
 
@@ -57,11 +66,11 @@ class ModelAssets:
         cols = ['open', 'high', 'low', 'close', 'vwap', 'volume', 'count']
         dataframe_result[cols] = dataframe_result[cols].apply(pd.to_numeric, errors='coerce', axis=1)
 
-        self.add_to_dataframe_moving_average(dataframe_result, self.period_moving_average)
+        self.__add_to_dataframe_moving_average(dataframe_result, self.__period_moving_average)
 
-        self.add_to_dataframe_sri(dataframe_result)
+        self.__add_to_dataframe_rsi(dataframe_result)
 
-        self.dataframe_selected_tradable_asset_pair = dataframe_result
+        self.__dataframe_selected_tradable_asset_pair = dataframe_result
 
         return None
 
@@ -69,29 +78,29 @@ class ModelAssets:
 
     def get_selected_tradable_asset_pair(self):
 
-        return self.selected_tradable_asset_pair
+        return self.__selected_tradable_asset_pair
 
 
     def set_selected_tradable_asset_pair(self,selected_tradable_asset_pair):
 
-        self.selected_tradable_asset_pair = selected_tradable_asset_pair
+        self.__selected_tradable_asset_pair = selected_tradable_asset_pair
 
         return None
 
     def set_period_moving_average(self,period_moving_average):
 
-        self.period_moving_average = period_moving_average
+        self.__period_moving_average = period_moving_average
 
         return None
 
 
-    def add_to_dataframe_moving_average(self , dataframe, interval_value = 3 , int_shift = 1 ):
+    def __add_to_dataframe_moving_average(self , dataframe, interval_value = 3 , int_shift = 1 ):
 
         dataframe['moving_average'] = dataframe['close'].rolling(interval_value).mean().shift(int_shift)
 
         return dataframe
 
-    def add_to_dataframe_sri(self, dataframe , rsi_period =  14 ):
+    def __add_to_dataframe_rsi(self, dataframe , rsi_period =  14 ):
 
         chg = dataframe.close.diff(1)
         gain = chg.mask(chg < 0, 0)

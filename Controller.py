@@ -6,34 +6,42 @@ import click
 
 class ControllerAssets:
 
-    model_assets = ModelAssets()
+    __model_assets = ModelAssets()
 
     def __init__(self):
+
         None
+
+
+    def get_status_kraken(self):
+
+        return self.__model_assets.get_status_kraken()
+
+
 
 
     def get_list_tradable_asset_pairs(self):
 
-        return self.model_assets.get_list_tradable_asset_pairs()
+        return self.__model_assets.get_list_tradable_asset_pairs()
 
 
     def set_selected_tradable_asset_pair(self, selected_tradable_asset_pair):
 
-        self.model_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
+        self.__model_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
 
     def set_period_moving_average(self, period_moving_average):
 
-        self.model_assets.set_period_moving_average(period_moving_average)
+        self.__model_assets.set_period_moving_average(period_moving_average)
 
     def get_period_moving_average(self):
 
-       return self.model_assets.get_period_moving_average()
+       return self.__model_assets.get_period_moving_average()
 
 
 
     def get_selected_tradable_asset_pair(self):
 
-        return self.model_assets.get_selected_tradable_asset_pair()
+        return self.__model_assets.get_selected_tradable_asset_pair()
 
 
     def set_dataframe_selected_tradable_asset_pair(self , selected_period_time ):
@@ -65,11 +73,11 @@ class ControllerAssets:
             minutes =1
 
 
-        self.model_assets.set_dataframe_selected_tradable_asset_pair(minutes)
+        self.__model_assets.set_dataframe_selected_tradable_asset_pair(minutes)
 
     def get_dataframe_selected_tradable_asset_pair(self):
 
-        dataframe = self.model_assets.get_dataframe_selected_tradable_asset_pair()
+        dataframe = self.__model_assets.get_dataframe_selected_tradable_asset_pair()
 
         return dataframe
 
@@ -79,8 +87,6 @@ class ControllerAssets:
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'close'])
 
-        #chart_data = chart_data.set_index('time') #para el altair
-
         return chart_data
 
     def get_dataframe_moving_average_chart(self):
@@ -89,7 +95,6 @@ class ControllerAssets:
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'moving_average'])
 
-        #chart_data = chart_data.set_index('time')
 
         return chart_data
 
@@ -98,8 +103,6 @@ class ControllerAssets:
         dataframe = self.get_dataframe_selected_tradable_asset_pair()
 
         chart_data = pd.DataFrame(dataframe, columns=['time', 'rsi'])
-
-        #chart_data = chart_data.set_index('time')
 
         return chart_data
 

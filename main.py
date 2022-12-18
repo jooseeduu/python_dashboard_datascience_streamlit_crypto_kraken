@@ -18,6 +18,8 @@ class Project_MBDS:
 
         view_streamlit.get_title(self.name_project)
 
+        view_streamlit.show_status()
+
         view_streamlit.get_sidebar()
 
         view_streamlit.get_price_chart()

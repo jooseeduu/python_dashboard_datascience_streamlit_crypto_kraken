@@ -1,43 +1,56 @@
 from requests.exceptions import HTTPError
 import krakenex
-import pandas as pd
 
 class APIKraken:
 
-    kraken = None
+    __kraken = None
 
     def __init__(self):
-        self.kraken = krakenex.API()
+        self.__kraken = krakenex.API()
         None
 
 
+    def get_status(self):
+        try:
+            response = self.__kraken.query_public('SystemStatus')
+
+            if(response['result']['status'] != 'online'):
+                return 'El servicio de Kraken no está disponible'
+
+        except HTTPError as e:
+            return 'El servicio de Kraken no está disponible'
+
+        return response['result']['status']
+
     def get_assets(self):
         try:
-            response = self.kraken.query_public('Assets')
+            response = self.__kraken.query_public('Assets')
             list_assets = list(response['result'].keys())
         except HTTPError as e:
-            print(str(e))
+            return str(e)
         return list_assets
 
 
     def get_list_tradable_asset_pairs(self):
         kraken = krakenex.API()
         try:
-            response = kraken.query_public('AssetPairs')
+            response = self.__kraken.query_public('AssetPairs')
         except HTTPError as e:
-            print(str(e))
+            return str(e)
         return response
 
 
     def get_OHLC(self,selected_tradable_asset_pair , interval  ):
+
         kraken = krakenex.API()
+
         try:
-            # response = kraken.query_public('Depth', {'pair': 'XXBTZUSD', 'count': '10'})
-            response = kraken.query_public('OHLC', {'pair': selected_tradable_asset_pair  , 'interval': interval  })
-            #print(response)
-            # pprint.pprint(response)
+
+            response = self.__kraken.query_public('OHLC', {'pair': selected_tradable_asset_pair  , 'interval': interval  })
+
         except HTTPError as e:
-            print(str(e))
+
+            return str(e)
 
         return response
 
