@@ -4,8 +4,6 @@ from Controller import *
 from datetime import datetime
 
 #https://altair-viz.github.io/gallery/index.html
-
-
 #https://altair-viz.github.io/user_guide/marks.html
 
 class Streamlit:
@@ -18,11 +16,10 @@ class Streamlit:
 
         st.set_page_config(
             page_title="Master Big Data Science",
-            page_icon="🧊",
+            page_icon="chart_with_upwards_trend",
             layout="wide",
             initial_sidebar_state="expanded"
         )
-
 
     def get_title(self,title):
 
@@ -33,14 +30,12 @@ class Streamlit:
         status = self.__controller_assets.get_status_kraken()
 
         if(status != 'online'):
+
             st.error('El servicio de Kraken no está disponible', icon="⛔")
+
             print('El servicio de Kraken no está disponible')
+
             exit(1)
-
-
-
-
-
 
 
     def get_sidebar(self):
@@ -57,13 +52,19 @@ class Streamlit:
 
         selected_period_time = st.sidebar.selectbox('Seleccione el Intervalo de Tiempo',list_period_time, index = default_value)
 
-        period_moving_average = st.sidebar.slider('Período para la Media Móvil', 1, 30, 3)
+        period_moving_average = st.sidebar.slider('Período Cálculo Media Móvil', 1, 30, 3)
+
+        period_rsi = st.sidebar.slider('Período Cálculo RSI', 1, 100, 14)
 
         self.__controller_assets.set_period_moving_average(period_moving_average)
+
+        self.__controller_assets.set_period_rsi(period_rsi)
 
         self.__controller_assets.set_selected_tradable_asset_pair(selected_tradable_asset_pair)
 
         self.__controller_assets.set_dataframe_selected_tradable_asset_pair(selected_period_time)
+
+        st.sidebar.markdown("""---""")
 
         st.sidebar.write("Fuente de Datos: [kraken](https://www.kraken.com/)")
 
@@ -98,29 +99,11 @@ class Streamlit:
 
         st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
-
-        #tab1, tab2 = st.tabs(["Streamlit theme (default)", "Altair native theme"])
-
-        #with tab1:
-        #    st.altair_chart(chart, theme="streamlit", use_container_width=True)
-
-        #with tab2:
-        #    st.altair_chart(chart, theme="streamlit", use_container_width=True)
-
-
-
     def get_moving_average_chart(self):
 
         dataframe = self.__controller_assets.get_dataframe_moving_average_chart()
 
         selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
-
-        #st.write("I'm ", period_moving_average, 'years old')
-        #st.line_chart(dataframe)
-        #source = data.stocks()
-        #print("------------------------------------------------DATAFRAME:")
-        #print(dataframe.info())
-
 
         chart = alt.Chart(dataframe).mark_area(
             line={'color': 'darkblue'},
@@ -147,7 +130,6 @@ class Streamlit:
         dataframe = self.__controller_assets.get_dataframe_rsi_chart()
         selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
-
         chart = alt.Chart(dataframe).mark_area(
             line={'color': 'darkred'},
             color=alt.Gradient(
@@ -163,27 +145,19 @@ class Streamlit:
             alt.X('time:T'),
             alt.Y('rsi:Q')
         ).properties(
-            title="RSI - "+ selected_tradable_asset_pair,
+            title="RSI - "+ selected_tradable_asset_pair
         ).interactive()
 
         line_70 = alt.Chart(pd.DataFrame({'rsi': [70]})).mark_rule(strokeDash=[10, 10], size=2).encode(y='rsi')
         line_30 = alt.Chart(pd.DataFrame({'rsi': [30]})).mark_rule(strokeDash=[10, 10], size=2).encode(y='rsi')
 
-
-
-        st.altair_chart(chart + line_70 + line_30, theme="streamlit", use_container_width=True)
-
-
-        #st.line_chart(dataframe)
+        st.altair_chart(chart + line_70  + line_30, theme="streamlit", use_container_width=True)
 
 
     def get_moving_average_and_price_chart(self):
 
         dataframe = self.__controller_assets.get_dataframe_moving_average_and_price_chart()
         selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
-
-
-        #st.help(dataframe)
 
         instructions = """
         Arrastre el cursor para ver los valores en el período seleccionado\n
@@ -238,16 +212,9 @@ class Streamlit:
 
         source = dataframe
 
-
         # Create a selection that chooses the nearest point & selects based on x-value
         nearest = alt.selection(type='single', nearest=True, on='mouseover',
                                 fields=['time'], empty='none')
-
-        # The basic line
-
-        #scale = alt.Scale(domain=['moving_average', ' close'], range=['gold', 'red'])
-        #color = alt.Color('variable:N', scale=scale)
-
 
         line = alt.Chart(source).mark_line(interpolate='basis').encode(
             x='time:T',
@@ -296,16 +263,16 @@ class Streamlit:
     def get_dataframe(self):
 
         dataframe = self.__controller_assets.get_dataframe_selected_tradable_asset_pair()
-        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
         df_xlsx = self.__controller_assets.to_excel(dataframe)
-        st.download_button(label='📥 DATAFRAME ('+ selected_tradable_asset_pair+')',
-                           data=df_xlsx,
-                           file_name='Dataframe ('+ selected_tradable_asset_pair+').xlsx' )
 
         st.dataframe(dataframe, use_container_width=True)
 
+        selected_tradable_asset_pair = self.__controller_assets.get_selected_tradable_asset_pair()
 
+        st.download_button(label='📥 DATAFRAME ('+ selected_tradable_asset_pair+')',
+                           data=df_xlsx,
+                           file_name='Dataframe ('+ selected_tradable_asset_pair+').xlsx' )
 
 
 

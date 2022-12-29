@@ -8,6 +8,8 @@ class ModelAssets:
 
     __period_moving_average = None
 
+    __period_rsi = None
+
     def __init__(self):
 
         None
@@ -46,7 +48,9 @@ class ModelAssets:
 
         return self.__period_moving_average
 
+    def get_period_rsi(self):
 
+        return self.__period_rsi
 
     def set_dataframe_selected_tradable_asset_pair(self, minutes ):
 
@@ -68,7 +72,7 @@ class ModelAssets:
 
         self.__add_to_dataframe_moving_average(dataframe_result, self.__period_moving_average)
 
-        self.__add_to_dataframe_rsi(dataframe_result)
+        self.__add_to_dataframe_rsi(dataframe_result , self.__period_rsi )
 
         self.__dataframe_selected_tradable_asset_pair = dataframe_result
 
@@ -92,6 +96,13 @@ class ModelAssets:
         self.__period_moving_average = period_moving_average
 
         return None
+
+    def set_period_rsi(self,period_rsi):
+
+        self.__period_rsi = period_rsi
+
+        return None
+
 
 
     def __add_to_dataframe_moving_average(self , dataframe, interval_value = 3 , int_shift = 1 ):

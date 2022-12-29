@@ -33,11 +33,17 @@ class ControllerAssets:
 
         self.__model_assets.set_period_moving_average(period_moving_average)
 
+    def set_period_rsi(self, period_rsi):
+
+        self.__model_assets.set_period_rsi(period_rsi)
+
     def get_period_moving_average(self):
 
        return self.__model_assets.get_period_moving_average()
 
+    def get_period_rsi(self):
 
+       return self.__model_assets.get_period_rsi()
 
     def get_selected_tradable_asset_pair(self):
 
