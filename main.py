@@ -1,4 +1,4 @@
-#para crear el requirements.txt
+#para generar el requirements.txt
 #python -m pipreqs.pipreqs --force --encoding utf-8 .
 
 import View
